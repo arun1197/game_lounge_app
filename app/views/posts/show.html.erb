@@ -1,0 +1,23 @@
+<li id="postpg">
+  <%= link_to gravatar_for(@post.user, size: 50), @post.user %>
+  <span class="user"><%= link_to @post.user.name, @post.user %></span>
+  <span class="content"><%= @post.content %></span>
+  <%= image_tag @post.picture.url, class: "pic" if @post.picture?%>
+  <span class="timestamp">
+    Posted <%= time_ago_in_words(@post.created_at) %> ago.
+    <% if current_user?(@post.user) %>
+      <%= link_to "delete", @post, method: :delete,
+                                       data: { confirm: "You sure?" } %>                            
+    <% end %>
+  </span>
+</li>
+<h3>Comments</h3>
+<%= form_for(@comment, url: post_comments_path(@post.id)) do |f| %>
+  <%= render 'shared/error_messages', object: f.object %>
+  <%= f.hidden_field :post_id, :value => @post.id %>
+  <%= f.text_area :content, placeholder: "Comment....", rows: 4 %>
+  <%= f.submit "Post", class: "btn btn-primary" %>
+<% end %>
+<ul class="comments">
+  <%= render @comments %>
+</ul>
